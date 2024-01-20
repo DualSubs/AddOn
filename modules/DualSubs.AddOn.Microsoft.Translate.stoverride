@@ -5,6 +5,7 @@ author: "VirgilClyne"
 homepage: "https://github.com/DualSubs"
 manual: "https://github.com/DualSubs/AddOn/wiki/🍿-DualSubs:-➕-AddOn-(Microsoft-Translate)"
 icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png"
+category: "🍿️ DualSubs"
 
 cron:
   script:
