@@ -2,7 +2,7 @@
 README: https://github.com/DualSubs
 */
 
-const $ = new Env("🍿️ DualSubs: ➕ AddOn v1.0.0(4) Microsoft Translate.beta");
+const $ = new Env("🍿️ DualSubs: ➕ AddOn v1.0.0(5) Microsoft Translate.beta");
 const DataBase = {
 	"Default":{
 		"Settings":{"Switch":true,"Type":"Translate","Types":["Official","Translate"],"Languages":["EN","ZH"],"CacheSize":50}
@@ -50,58 +50,33 @@ const DataBase = {
 	}
 };
 
+const $request = {
+	"url": "https://edge.microsoft.com/translate/auth",
+	"headers": {
+		"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
+		"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+	}
+};
+
 /***************** Processing *****************/
 (async () => {
-	const $request = {
-		"url": "https://edge.microsoft.com/translate/auth",
-		"headers": {
-			"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
-			"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-		}
-	};
-	$response = await $.http.get($request);
-	// 解构URL
-	//let url = URL.parse($request?.url);
-	//$.log(`⚠ ${$.name}`, `URL: ${JSON.stringify(url)}`, "");
-	// 获取连接参数
-	//const METHOD = $request?.method, HOST = url?.host, PATH = url?.path, PATHs = url?.paths;
-	//$.log(`⚠ ${$.name}`, `METHOD: ${METHOD}`, "");
-	// 解析格式
-	const FORMAT = ($response?.headers?.["Content-Type"] ?? $response?.headers?.["content-type"])?.split(";")?.[0];
-	$.log(`⚠ ${$.name}, FORMAT: ${FORMAT}`, "");
 	// 读取设置
 	const { Settings, Caches, Configs } = setENV("DualSubs", ["Translate", "API"], DataBase);
 	$.log(`⚠ ${$.name}`, `Settings.Switch: ${Settings?.Switch}`, "");
 	switch (Settings.Switch) {
 		case true:
 		default:
-			// 创建空数据
-			let body = {};
-			// 格式判断
-			switch (FORMAT) {
-				case undefined: // 视为无body
-					break;
-				case "application/x-www-form-urlencoded":
-				case "text/plain":
-				case "text/html":
-				default:
-					Settings.Vendor = "Microsoft";
-					Settings.Microsoft.Version = "Azure";
-					Settings.Microsoft.Mode = "Token";
-					Settings.Microsoft.Token = $response?.body;
-					$.log(`⚠ ${$.name}`, `Settings: ${JSON.stringify(Settings)}`, "");
-					// 写入缓存
-					$.setdata(Settings.Vendor, `@DualSubs.Translate.Settings.Vendor`);
-					$.setdata(Settings.Microsoft.Version, `@DualSubs.API.Settings.Microsoft.Version`);
-					$.setdata(Settings.Microsoft.Mode, `@DualSubs.API.Settings.Microsoft.Mode`);
-					$.setdata(Settings.Microsoft.Token, `@DualSubs.API.Settings.Microsoft.Token`);
-					break;
-				case "application/x-mpegURL":
-				case "application/x-mpegurl":
-				case "application/vnd.apple.mpegurl":
-				case "audio/mpegurl":
-					break;
-			};
+			const $response = await $.http.get($request);
+			Settings.Vendor = "Microsoft";
+			Settings.Microsoft.Version = "Azure";
+			Settings.Microsoft.Mode = "Token";
+			Settings.Microsoft.Token = $response?.body;
+			$.log(`⚠ ${$.name}`, `Settings: ${JSON.stringify(Settings)}`, "");
+			// 写入缓存
+			$.setdata(Settings.Vendor, `@DualSubs.Translate.Settings.Vendor`);
+			$.setdata(Settings.Microsoft.Version, `@DualSubs.API.Settings.Microsoft.Version`);
+			$.setdata(Settings.Microsoft.Mode, `@DualSubs.API.Settings.Microsoft.Mode`);
+			$.setdata(Settings.Microsoft.Token, `@DualSubs.API.Settings.Microsoft.Token`);
 			break;
 		case false:
 			break;
