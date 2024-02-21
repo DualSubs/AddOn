@@ -15,5 +15,5 @@ cron:
 
 script-providers:
   DualSubs.AddOn.Microsoft.Translate:
-    url: https://raw.githubusercontent.com/DualSubs/AddOn/main/js/DualSubs.AddOn.Microsoft.Translate.js
+    url: https://raw.githubusercontent.com/DualSubs/AddOn/main/js/AddOn.Microsoft.Translate.js
     interval: 86400
