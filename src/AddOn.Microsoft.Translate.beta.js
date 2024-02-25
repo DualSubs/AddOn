@@ -3,7 +3,7 @@ import ENVs from "./ENV/ENV.mjs";
 import Database from "./database/index.mjs";
 import setENV from "./function/setENV.mjs";
 
-const $ = new ENVs("🍿️ DualSubs: ➕ AddOn v1.0.1(1) Microsoft.Translate.beta");
+const $ = new ENVs("🍿️ DualSubs: ➕ AddOn v1.0.1(2) Microsoft.Translate.beta");
 
 const $request = {
 	"url": "https://edge.microsoft.com/translate/auth",
@@ -23,9 +23,9 @@ const $request = {
 		default:
 			const $response = await $.fetch($request);
 			Settings.Vendor = "Microsoft";
-			Settings.Microsoft.Version = "Azure";
-			Settings.Microsoft.Mode = "Token";
-			Settings.Microsoft.Token = $response?.body;
+			$.lodash.set(Settings, "Microsoft.Version", "Azure");
+			$.lodash.set(Settings, "Microsoft.Mode", "Token");
+			$.lodash.set(Settings, "Microsoft.Token", $response?.body);
 			$.log(`⚠ ${$.name}`, `Settings: ${JSON.stringify(Settings)}`, "");
 			// 写入缓存
 			$.setdata(Settings.Vendor, `@DualSubs.Translate.Settings.Vendor`);

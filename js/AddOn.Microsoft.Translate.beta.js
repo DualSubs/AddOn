@@ -696,7 +696,7 @@ function setENV($, name, platforms, database) {
 	return { Settings, Caches, Configs };
 }
 
-const $ = new ENV("🍿️ DualSubs: ➕ AddOn v1.0.1(1) Microsoft.Translate.beta");
+const $ = new ENV("🍿️ DualSubs: ➕ AddOn v1.0.1(2) Microsoft.Translate.beta");
 
 const $request = {
 	"url": "https://edge.microsoft.com/translate/auth",
@@ -716,9 +716,9 @@ const $request = {
 		default:
 			const $response = await $.fetch($request);
 			Settings.Vendor = "Microsoft";
-			Settings.Microsoft.Version = "Azure";
-			Settings.Microsoft.Mode = "Token";
-			Settings.Microsoft.Token = $response?.body;
+			$.lodash.set(Settings, "Microsoft.Version", "Azure");
+			$.lodash.set(Settings, "Microsoft.Mode", "Token");
+			$.lodash.set(Settings, "Microsoft.Token", $response?.body);
 			$.log(`⚠ ${$.name}`, `Settings: ${JSON.stringify(Settings)}`, "");
 			// 写入缓存
 			$.setdata(Settings.Vendor, `@DualSubs.Translate.Settings.Vendor`);
