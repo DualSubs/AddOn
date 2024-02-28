@@ -1,9 +1,9 @@
-import ENVs from "./ENV/ENV.mjs";
+import ENVclass from "./ENV/ENV.mjs";
 
 import Database from "./database/index.mjs";
 import setENV from "./function/setENV.mjs";
 
-const $ = new ENVs("🍿️ DualSubs: ➕ AddOn v1.0.1(2) Microsoft.Translate.beta");
+const $ = new ENVclass("🍿️ DualSubs: ➕ AddOn v1.0.1(2) Microsoft.Translate.beta");
 
 const $request = {
 	"url": "https://edge.microsoft.com/translate/auth",
@@ -39,5 +39,3 @@ const $request = {
 })()
 	.catch((e) => $.logErr(e))
 	.finally(() => $.done())
-
-/***************** Function *****************/
