@@ -1,9 +1,11 @@
-import ENVclass from "./ENV/ENV.mjs";
+import _ from './ENV/Lodash.mjs'
+import $Storage from './ENV/$Storage.mjs'
+import ENV from "./ENV/ENV.mjs";
 
 import Database from "./database/index.mjs";
 import setENV from "./function/setENV.mjs";
 
-const $ = new ENVclass("🍿️ DualSubs: ➕ AddOn v1.0.1(2) Microsoft.Translate.beta");
+const $ = new ENV("🍿️ DualSubs: ➕ AddOn v1.0.1(3) Microsoft.Translate");
 
 const $request = {
 	"url": "https://edge.microsoft.com/translate/auth",
@@ -22,16 +24,16 @@ const $request = {
 		case true:
 		default:
 			const $response = await $.fetch($request);
-			Settings.Vendor = "Microsoft";
-			$.lodash.set(Settings, "Microsoft.Version", "Azure");
-			$.lodash.set(Settings, "Microsoft.Mode", "Token");
-			$.lodash.set(Settings, "Microsoft.Token", $response?.body);
+			_.set(Settings, "Vendor", "Microsoft");
+			_.set(Settings, "Microsoft.Version", "Azure");
+			_.set(Settings, "Microsoft.Mode", "Token");
+			_.set(Settings, "Microsoft.Token", $response?.body);
 			$.log(`⚠ ${$.name}`, `Settings: ${JSON.stringify(Settings)}`, "");
 			// 写入缓存
-			$.setdata(Settings.Vendor, `@DualSubs.Translate.Settings.Vendor`);
-			$.setdata(Settings.Microsoft.Version, `@DualSubs.API.Settings.Microsoft.Version`);
-			$.setdata(Settings.Microsoft.Mode, `@DualSubs.API.Settings.Microsoft.Mode`);
-			$.setdata(Settings.Microsoft.Token, `@DualSubs.API.Settings.Microsoft.Token`);
+			$Storage.setItem(`@DualSubs.Translate.Settings.Vendor`, Settings.Vendor);
+			$Storage.setItem(`@DualSubs.API.Settings.Microsoft.Version`, Settings.Microsoft.Version);
+			$Storage.setItem(`@DualSubs.API.Settings.Microsoft.Mode`, Settings.Microsoft.Mode);
+			$Storage.setItem(`@DualSubs.API.Settings.Microsoft.Token`, Settings.Microsoft.Token);
 			break;
 		case false:
 			break;
