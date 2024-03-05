@@ -294,7 +294,7 @@ class $Storage {
 
 class ENV {
 	static name = "ENV"
-	static version = '1.6.4'
+	static version = '1.7.1'
 	static about() { return console.log(`\n🟧 ${this.name} v${this.version}\n`) }
 
 	constructor(name, opts) {
@@ -302,6 +302,7 @@ class ENV {
 		this.name = name;
 		this.logs = [];
 		this.isMute = false;
+		this.isMuteLog = false;
 		this.logSeparator = '\n';
 		this.encoding = 'utf-8';
 		this.startTime = new Date().getTime();
@@ -349,33 +350,28 @@ class ENV {
 		return 'Egern' === this.platform()
 	}
 
-	getScript(url) {
-		return new Promise((resolve) => {
-			this.get({ url }, (error, response, body) => resolve(body));
-		})
+	async getScript(url) {
+		return await this.fetch(url).then(response => response.body);
 	}
 
-	runScript(script, runOpts) {
-		return new Promise((resolve) => {
-			let httpapi = this.Storage.getItem('@chavy_boxjs_userCfgs.httpapi');
-			httpapi = httpapi ? httpapi.replace(/\n/g, '').trim() : httpapi;
-			let httpapi_timeout = this.Storage.getItem('@chavy_boxjs_userCfgs.httpapi_timeout');
-			httpapi_timeout = httpapi_timeout ? httpapi_timeout * 1 : 20;
-			httpapi_timeout =
-				runOpts && runOpts.timeout ? runOpts.timeout : httpapi_timeout;
-			const [key, addr] = httpapi.split('@');
-			const opts = {
-				url: `http://${addr}/v1/scripting/evaluate`,
-				body: {
-					script_text: script,
-					mock_type: 'cron',
-					timeout: httpapi_timeout
-				},
-				headers: { 'X-Key': key, 'Accept': '*/*' },
+	async runScript(script, runOpts) {
+		let httpapi = $Storage.getItem('@chavy_boxjs_userCfgs.httpapi');
+		httpapi = httpapi?.replace?.(/\n/g, '')?.trim();
+		let httpapi_timeout = $Storage.getItem('@chavy_boxjs_userCfgs.httpapi_timeout');
+		httpapi_timeout = (httpapi_timeout * 1) ?? 20;
+		httpapi_timeout = runOpts?.timeout ?? httpapi_timeout;
+		const [password, address] = httpapi.split('@');
+		const request = {
+			url: `http://${address}/v1/scripting/evaluate`,
+			body: {
+				script_text: script,
+				mock_type: 'cron',
 				timeout: httpapi_timeout
-			};
-			this.post(opts, (error, response, body) => resolve(body));
-		}).catch((e) => this.logErr(e))
+			},
+			headers: { 'X-Key': password, 'Accept': '*/*' },
+			timeout: httpapi_timeout
+		};
+		await this.fetch(request).then(response => response.body, error => this.logErr(error));
 	}
 
 	initGotEnv(opts) {
@@ -705,58 +701,6 @@ class ENV {
 				break;
 		}
 	}
-
-	/**
-	 * Get Environment Variables
-	 * @link https://github.com/VirgilClyne/GetSomeFries/blob/main/function/getENV/getENV.js
-	 * @author VirgilClyne
-	 * @param {String} key - Persistent Store Key
-	 * @param {Array} names - Platform Names
-	 * @param {Object} database - Default Database
-	 * @return {Object} { Settings, Caches, Configs }
-	 */
-	getENV(key, names, database) {
-		//this.log(`☑️ ${this.name}, Get Environment Variables`, "");
-		/***************** BoxJs *****************/
-		// 包装为局部变量，用完释放内存
-		// BoxJs的清空操作返回假值空字符串, 逻辑或操作符会在左侧操作数为假值时返回右侧操作数。
-		let BoxJs = $Storage.getItem(key, database);
-		//this.log(`🚧 ${this.name}, Get Environment Variables`, `BoxJs类型: ${typeof BoxJs}`, `BoxJs内容: ${JSON.stringify(BoxJs)}`, "");
-		/***************** Argument *****************/
-		let Argument = {};
-		if (typeof $argument !== "undefined") {
-			if (Boolean($argument)) {
-				//this.log(`🎉 ${this.name}, $Argument`);
-				let arg = Object.fromEntries($argument.split("&").map((item) => item.split("=").map(i => i.replace(/\"/g, ''))));
-				//this.log(JSON.stringify(arg));
-				for (let item in arg) Lodash.set(Argument, item, arg[item]);
-				//this.log(JSON.stringify(Argument));
-			}			//this.log(`✅ ${this.name}, Get Environment Variables`, `Argument类型: ${typeof Argument}`, `Argument内容: ${JSON.stringify(Argument)}`, "");
-		}		/***************** Store *****************/
-		const Store = { Settings: database?.Default?.Settings || {}, Configs: database?.Default?.Configs || {}, Caches: {} };
-		if (!Array.isArray(names)) names = [names];
-		//this.log(`🚧 ${this.name}, Get Environment Variables`, `names类型: ${typeof names}`, `names内容: ${JSON.stringify(names)}`, "");
-		for (let name of names) {
-			Store.Settings = { ...Store.Settings, ...database?.[name]?.Settings, ...Argument, ...BoxJs?.[name]?.Settings };
-			Store.Configs = { ...Store.Configs, ...database?.[name]?.Configs };
-			if (BoxJs?.[name]?.Caches && typeof BoxJs?.[name]?.Caches === "string") BoxJs[name].Caches = JSON.parse(BoxJs?.[name]?.Caches);
-			Store.Caches = { ...Store.Caches, ...BoxJs?.[name]?.Caches };
-		}		//this.log(`🚧 ${this.name}, Get Environment Variables`, `Store.Settings类型: ${typeof Store.Settings}`, `Store.Settings: ${JSON.stringify(Store.Settings)}`, "");
-		this.traverseObject(Store.Settings, (key, value) => {
-			//this.log(`🚧 ${this.name}, traverseObject`, `${key}: ${typeof value}`, `${key}: ${JSON.stringify(value)}`, "");
-			if (value === "true" || value === "false") value = JSON.parse(value); // 字符串转Boolean
-			else if (typeof value === "string") {
-				if (value.includes(",")) value = value.split(",").map(item => this.string2number(item)); // 字符串转数组转数字
-				else value = this.string2number(value); // 字符串转数字
-			}			return value;
-		});
-		//this.log(`✅ ${this.name}, Get Environment Variables`, `Store: ${typeof Store.Caches}`, `Store内容: ${JSON.stringify(Store)}`, "");
-		return Store;
-	};
-
-	/***************** function *****************/
-	traverseObject(o, c) { for (var t in o) { var n = o[t]; o[t] = "object" == typeof n && null !== n ? this.traverseObject(n, c) : c(t, n); } return o }
-	string2number(string) { if (string && !isNaN(string)) string = parseInt(string, 10); return string }
 }
 
 var Settings = {
@@ -799,6 +743,58 @@ var Database$1 = Database = {
 };
 
 /**
+ * Get Storage Variables
+ * @link https://github.com/NanoCat-Me/ENV/blob/main/getStorage.mjs
+ * @author VirgilClyne
+ * @param {String} key - Persistent Store Key
+ * @param {Array} names - Platform Names
+ * @param {Object} database - Default Database
+ * @return {Object} { Settings, Caches, Configs }
+ */
+function getStorage(key, names, database) {
+    //console.log(`☑️ ${this.name}, Get Environment Variables`, "");
+    /***************** BoxJs *****************/
+    // 包装为局部变量，用完释放内存
+    // BoxJs的清空操作返回假值空字符串, 逻辑或操作符会在左侧操作数为假值时返回右侧操作数。
+    let BoxJs = $Storage.getItem(key, database);
+    //console.log(`🚧 ${this.name}, Get Environment Variables`, `BoxJs类型: ${typeof BoxJs}`, `BoxJs内容: ${JSON.stringify(BoxJs)}`, "");
+    /***************** Argument *****************/
+    let Argument = {};
+    if (typeof $argument !== "undefined") {
+        if (Boolean($argument)) {
+            //console.log(`🎉 ${this.name}, $Argument`);
+            let arg = Object.fromEntries($argument.split("&").map((item) => item.split("=").map(i => i.replace(/\"/g, ''))));
+            //console.log(JSON.stringify(arg));
+            for (let item in arg) Lodash.set(Argument, item, arg[item]);
+            //console.log(JSON.stringify(Argument));
+        }        //console.log(`✅ ${this.name}, Get Environment Variables`, `Argument类型: ${typeof Argument}`, `Argument内容: ${JSON.stringify(Argument)}`, "");
+    }    /***************** Store *****************/
+    const Store = { Settings: database?.Default?.Settings || {}, Configs: database?.Default?.Configs || {}, Caches: {} };
+    if (!Array.isArray(names)) names = [names];
+    //console.log(`🚧 ${this.name}, Get Environment Variables`, `names类型: ${typeof names}`, `names内容: ${JSON.stringify(names)}`, "");
+    for (let name of names) {
+        Store.Settings = { ...Store.Settings, ...database?.[name]?.Settings, ...Argument, ...BoxJs?.[name]?.Settings };
+        Store.Configs = { ...Store.Configs, ...database?.[name]?.Configs };
+        if (BoxJs?.[name]?.Caches && typeof BoxJs?.[name]?.Caches === "string") BoxJs[name].Caches = JSON.parse(BoxJs?.[name]?.Caches);
+        Store.Caches = { ...Store.Caches, ...BoxJs?.[name]?.Caches };
+    }    //console.log(`🚧 ${this.name}, Get Environment Variables`, `Store.Settings类型: ${typeof Store.Settings}`, `Store.Settings: ${JSON.stringify(Store.Settings)}`, "");
+    traverseObject(Store.Settings, (key, value) => {
+        //console.log(`🚧 ${this.name}, traverseObject`, `${key}: ${typeof value}`, `${key}: ${JSON.stringify(value)}`, "");
+        if (value === "true" || value === "false") value = JSON.parse(value); // 字符串转Boolean
+        else if (typeof value === "string") {
+            if (value.includes(",")) value = value.split(",").map(item => string2number(item)); // 字符串转数组转数字
+            else value = string2number(value); // 字符串转数字
+        }        return value;
+    });
+    //console.log(`✅ ${this.name}, Get Environment Variables`, `Store: ${typeof Store.Caches}`, `Store内容: ${JSON.stringify(Store)}`, "");
+    return Store;
+
+    /***************** function *****************/
+    function traverseObject(o, c) { for (var t in o) { var n = o[t]; o[t] = "object" == typeof n && null !== n ? traverseObject(n, c) : c(t, n); } return o }
+    function string2number(string) { if (string && !isNaN(string)) string = parseInt(string, 10); return string }
+}
+
+/**
  * Set Environment Variables
  * @author VirgilClyne
  * @param {String} name - Persistent Store Key
@@ -806,9 +802,9 @@ var Database$1 = Database = {
  * @param {Object} database - Default DataBase
  * @return {Object} { Settings, Caches, Configs }
  */
-function setENV($, name, platforms, database) {
+function setENV(name, platforms, database) {
 	$.log(`☑️ ${$.name}, Set Environment Variables`, "");
-	let { Settings, Caches, Configs } = $.getENV(name, platforms, database);
+	let { Settings, Caches, Configs } = getStorage(name, platforms, database);
 	/***************** Settings *****************/
 	if (!Array.isArray(Settings?.Types)) Settings.Types = (Settings.Types) ? [Settings.Types] : []; // 只有一个选项时，无逗号分隔
 	$.log(`✅ ${$.name}, Set Environment Variables`, `Settings: ${typeof Settings}`, `Settings内容: ${JSON.stringify(Settings)}`, "");
@@ -822,7 +818,7 @@ function setENV($, name, platforms, database) {
 	return { Settings, Caches, Configs };
 }
 
-const $ = new ENV("🍿️ DualSubs: ➕ AddOn v1.0.1(3) Microsoft.Translate.beta");
+const $$1 = new ENV("🍿️ DualSubs: ➕ AddOn v1.0.1(4) Microsoft.Translate.beta");
 
 const $request = {
 	"url": "https://edge.microsoft.com/translate/auth",
@@ -835,17 +831,17 @@ const $request = {
 /***************** Processing *****************/
 (async () => {
 	// 读取设置
-	const { Settings, Caches, Configs } = setENV($, "DualSubs", ["Translate", "API"], Database$1);
-	$.log(`⚠ ${$.name}`, `Settings.Switch: ${Settings?.Switch}`, "");
+	const { Settings, Caches, Configs } = setENV("DualSubs", ["Translate", "API"], Database$1);
+	$$1.log(`⚠ Settings.Switch: ${Settings?.Switch}`, "");
 	switch (Settings.Switch) {
 		case true:
 		default:
-			const $response = await $.fetch($request);
+			const $response = await $$1.fetch($request);
 			Lodash.set(Settings, "Vendor", "Microsoft");
 			Lodash.set(Settings, "Microsoft.Version", "Azure");
 			Lodash.set(Settings, "Microsoft.Mode", "Token");
 			Lodash.set(Settings, "Microsoft.Token", $response?.body);
-			$.log(`⚠ ${$.name}`, `Settings: ${JSON.stringify(Settings)}`, "");
+			$$1.log(`⚠ Settings: ${JSON.stringify(Settings)}`, "");
 			// 写入缓存
 			$Storage.setItem(`@DualSubs.Translate.Settings.Vendor`, Settings.Vendor);
 			$Storage.setItem(`@DualSubs.API.Settings.Microsoft.Version`, Settings.Microsoft.Version);
@@ -855,5 +851,5 @@ const $request = {
 		case false:
 			break;
 	}})()
-	.catch((e) => $.logErr(e))
-	.finally(() => $.done());
+	.catch((e) => $$1.logErr(e))
+	.finally(() => $$1.done());

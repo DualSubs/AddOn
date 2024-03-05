@@ -1,3 +1,6 @@
+import getStorage from '../ENV/getStorage.mjs'
+import _ from '../ENV/Lodash.mjs'
+
 /**
  * Set Environment Variables
  * @author VirgilClyne
@@ -6,9 +9,9 @@
  * @param {Object} database - Default DataBase
  * @return {Object} { Settings, Caches, Configs }
  */
-export default function setENV($, name, platforms, database) {
+export default function setENV(name, platforms, database) {
 	$.log(`☑️ ${$.name}, Set Environment Variables`, "");
-	let { Settings, Caches, Configs } = $.getENV(name, platforms, database);
+	let { Settings, Caches, Configs } = getStorage(name, platforms, database);
 	/***************** Settings *****************/
 	if (!Array.isArray(Settings?.Types)) Settings.Types = (Settings.Types) ? [Settings.Types] : []; // 只有一个选项时，无逗号分隔
 	$.log(`✅ ${$.name}, Set Environment Variables`, `Settings: ${typeof Settings}`, `Settings内容: ${JSON.stringify(Settings)}`, "");
