@@ -803,22 +803,22 @@ function getStorage(key, names, database) {
  * @return {Object} { Settings, Caches, Configs }
  */
 function setENV(name, platforms, database) {
-	$.log(`☑️ ${$.name}, Set Environment Variables`, "");
+	console.log(`☑️ Set Environment Variables`, "");
 	let { Settings, Caches, Configs } = getStorage(name, platforms, database);
 	/***************** Settings *****************/
 	if (!Array.isArray(Settings?.Types)) Settings.Types = (Settings.Types) ? [Settings.Types] : []; // 只有一个选项时，无逗号分隔
-	$.log(`✅ ${$.name}, Set Environment Variables`, `Settings: ${typeof Settings}`, `Settings内容: ${JSON.stringify(Settings)}`, "");
+	console.log(`✅ Set Environment Variables, Settings: ${typeof Settings}, Settings内容: ${JSON.stringify(Settings)}`, "");
 	/***************** Caches *****************/
-	//$.log(`✅ ${$.name}, Set Environment Variables`, `Caches: ${typeof Caches}`, `Caches内容: ${JSON.stringify(Caches)}`, "");
 	if (typeof Caches?.Playlists !== "object" || Array.isArray(Caches?.Playlists)) Caches.Playlists = {}; // 创建Playlists缓存
 	Caches.Playlists.Master = new Map(JSON.parse(Caches?.Playlists?.Master || "[]")); // Strings转Array转Map
 	Caches.Playlists.Subtitle = new Map(JSON.parse(Caches?.Playlists?.Subtitle || "[]")); // Strings转Array转Map
 	if (typeof Caches?.Subtitles !== "object") Caches.Subtitles = new Map(JSON.parse(Caches?.Subtitles || "[]")); // Strings转Array转Map
+	//console.log(`✅ Set Environment Variables, Caches: ${typeof Caches}, Caches内容: ${JSON.stringify(Caches)}`, "");
 	/***************** Configs *****************/
 	return { Settings, Caches, Configs };
 }
 
-const $$1 = new ENV("🍿️ DualSubs: ➕ AddOn v1.0.1(4) Microsoft.Translate.beta");
+const $ = new ENV("🍿️ DualSubs: ➕ AddOn v1.0.1(4) Microsoft.Translate.beta");
 
 const $request = {
 	"url": "https://edge.microsoft.com/translate/auth",
@@ -832,16 +832,16 @@ const $request = {
 (async () => {
 	// 读取设置
 	const { Settings, Caches, Configs } = setENV("DualSubs", ["Translate", "API"], Database$1);
-	$$1.log(`⚠ Settings.Switch: ${Settings?.Switch}`, "");
+	$.log(`⚠ Settings.Switch: ${Settings?.Switch}`, "");
 	switch (Settings.Switch) {
 		case true:
 		default:
-			const $response = await $$1.fetch($request);
+			const $response = await $.fetch($request);
 			Lodash.set(Settings, "Vendor", "Microsoft");
 			Lodash.set(Settings, "Microsoft.Version", "Azure");
 			Lodash.set(Settings, "Microsoft.Mode", "Token");
 			Lodash.set(Settings, "Microsoft.Token", $response?.body);
-			$$1.log(`⚠ Settings: ${JSON.stringify(Settings)}`, "");
+			$.log(`⚠ Settings: ${JSON.stringify(Settings)}`, "");
 			// 写入缓存
 			$Storage.setItem(`@DualSubs.Translate.Settings.Vendor`, Settings.Vendor);
 			$Storage.setItem(`@DualSubs.API.Settings.Microsoft.Version`, Settings.Microsoft.Version);
@@ -851,5 +851,5 @@ const $request = {
 		case false:
 			break;
 	}})()
-	.catch((e) => $$1.logErr(e))
-	.finally(() => $$1.done());
+	.catch((e) => $.logErr(e))
+	.finally(() => $.done());
