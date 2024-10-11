@@ -1,12 +1,6 @@
-import _ from './ENV/Lodash.mjs'
-import $Storage from './ENV/$Storage.mjs'
-import ENV from "./ENV/ENV.mjs";
-
-import Database from "./database/index.mjs";
+import { $platform, _, Storage, fetch, notification, log, logError, wait, done, getScript, runScript } from "./utils/utils.mjs";
+import database from "./function/database.mjs";
 import setENV from "./function/setENV.mjs";
-
-const $ = new ENV("🍿️ DualSubs: ➕ AddOn v1.0.1(4) Microsoft.Translate");
-
 const $request = {
 	"url": "https://edge.microsoft.com/translate/auth",
 	"headers": {
@@ -14,30 +8,29 @@ const $request = {
 		"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
 	}
 };
-
 /***************** Processing *****************/
 (async () => {
 	// 读取设置
-	const { Settings, Caches, Configs } = setENV("DualSubs", ["Translate", "API"], Database);
-	$.log(`⚠ Settings.Switch: ${Settings?.Switch}`, "");
+	const { Settings, Caches, Configs } = setENV("DualSubs", ["Translate", "API"], database);
+	log(`⚠ Settings.Switch: ${Settings?.Switch}`, "");
 	switch (Settings.Switch) {
 		case true:
 		default:
-			const $response = await $.fetch($request);
+			const $response = await fetch($request);
 			_.set(Settings, "Vendor", "Microsoft");
 			_.set(Settings, "Microsoft.Version", "Azure");
 			_.set(Settings, "Microsoft.Mode", "Token");
 			_.set(Settings, "Microsoft.Token", $response?.body);
-			$.log(`⚠ Settings: ${JSON.stringify(Settings)}`, "");
+			log(`⚠ Settings: ${JSON.stringify(Settings)}`, "");
 			// 写入缓存
-			$Storage.setItem(`@DualSubs.Translate.Settings.Vendor`, Settings.Vendor);
-			$Storage.setItem(`@DualSubs.API.Settings.Microsoft.Version`, Settings.Microsoft.Version);
-			$Storage.setItem(`@DualSubs.API.Settings.Microsoft.Mode`, Settings.Microsoft.Mode);
-			$Storage.setItem(`@DualSubs.API.Settings.Microsoft.Token`, Settings.Microsoft.Token);
+			Storage.setItem(`@DualSubs.Translate.Settings.Vendor`, Settings.Vendor);
+			Storage.setItem(`@DualSubs.API.Settings.Microsoft.Version`, Settings.Microsoft.Version);
+			Storage.setItem(`@DualSubs.API.Settings.Microsoft.Mode`, Settings.Microsoft.Mode);
+			Storage.setItem(`@DualSubs.API.Settings.Microsoft.Token`, Settings.Microsoft.Token);
 			break;
 		case false:
 			break;
 	};
 })()
-	.catch((e) => $.logErr(e))
-	.finally(() => $.done())
+	.catch((e) => logError(e))
+	.finally(() => done())
