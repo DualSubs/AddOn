@@ -1,0 +1,12 @@
+#!name = {{@package 'displayName'}}
+#!desc = {{inline (@package 'description')}}
+#!openUrl = {{@package 'openUrl'}}
+#!author = {{@package 'contributors'}}
+#!homepage = {{@package 'homepage'}}
+#!icon = {{@package 'icon'}}
+#!category = {{@package 'organizationName'}}
+#!date = {{now "yyyy-MM-dd HH:mm:ss"}}
+#!version = {{@package 'version'}}
+
+[Script]
+🍿️ DualSubs.AddOn.Microsoft.Translate = type=cron, cronexp="*/10 * * * *", timeout=60, script-path=https://github.com/DualSubs/AddOn/releases/download/v{{@package 'version'}}/Microsoft.Translate.bundle.js

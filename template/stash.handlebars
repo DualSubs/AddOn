@@ -1,0 +1,27 @@
+name: "{{@package 'displayName'}}  (Microsoft Translate)"
+desc: |-
+  {{#each (split (@package 'description') "\n")}}
+  {{{this}}}
+  {{/each}}
+  切换为微软翻译并自动刷新Token
+openUrl: "{{@package 'openUrl'}}"
+author: |-
+  {{#each (@package 'contributors')}}
+  {{this}}
+  {{/each}}
+homepage: "{{@package 'homepage'}}"
+icon: "{{@package 'icon'}}"
+category: "{{@package 'organizationName'}}"
+date: "{{now "yyyy-MM-dd HH:mm:ss"}}"
+version: "{{@package 'version'}}"
+
+cron:
+  script:
+    - name: "🍿️ DualSubs.AddOn.Microsoft.Translate"
+      cron: "*/10 * * * *" # at every 10th minute
+      argument: # optional, if the script needs arguments
+
+script-providers:
+  "🍿️ DualSubs.AddOn.Microsoft.Translate":
+    url: https://github.com/DualSubs/AddOn/releases/download/v{{@package 'version'}}/Microsoft.Translate.bundle.js
+    interval: 86400

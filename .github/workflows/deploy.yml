@@ -1,0 +1,30 @@
+name: Deploy
+on:
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - dev
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  debug:
+    uses: ./.github/workflows/dev.yml
+    secrets: inherit
+  deploy:
+    needs: debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@master
+        with:
+          name: artifact
+      - name: Deploy
+        uses: exuanbo/actions-deploy-gist@main
+        with:
+          token: ${{ secrets.GIST_TOKEN }}
+          gist_id: c7d70898da568b0a3bbee5bfd3c07f95
+          gist_description: "🍿️ DualSubs: ➕ AddOn (Microsoft Translate)"
+          file_path: dist/Microsoft.Translate.bundle.js
