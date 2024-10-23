@@ -3,6 +3,7 @@ description: |-
   {{#each (split (@package 'description') "\n")}}
   {{{this}}}
   {{/each}}
+  切换为微软翻译并自动刷新Token
 open_url: "{{@package 'openUrl'}}"
 author: |-
   {{#each (@package 'contributors')}}
