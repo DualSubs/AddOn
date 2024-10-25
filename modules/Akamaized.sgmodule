@@ -7,10 +7,10 @@
 #!category=🍿️ DualSubs
 
 [Script]
-DualSubs.Akamaized.M3U8.Master.response = type=http-response, pattern=^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index.m3u8, requires-body=1, script-path=https://raw.githubusercontent.com/DualSubs/Universal/main/js/M3U8.response.js
-DualSubs.Akamaized.M3U8.Subtitles.response = type=http-response, pattern=^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).m3u8\?(.*)subtype=, requires-body=1, script-path=https://raw.githubusercontent.com/DualSubs/Universal/main/js/M3U8.response.js
-DualSubs.Akamaized.Composite.Subtitles.response = type=http-response, pattern=^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).vtt\?(.*)subtype=(Official|External), requires-body=1, script-path=https://raw.githubusercontent.com/DualSubs/Universal/main/js/Composite.Subtitles.response.js
-DualSubs.Akamaized.Translate.Subtitles.response = type=http-response, pattern=^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).vtt\?(.*)subtype=Translate, requires-body=1, script-path=https://raw.githubusercontent.com/DualSubs/Universal/main/js/Translate.response.js
+DualSubs.Akamaized.M3U8.Master.response = type=http-response, pattern=^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index.m3u8, requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Manifest.response.bundle.js
+DualSubs.Akamaized.M3U8.Subtitles.response = type=http-response, pattern=^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).m3u8\?(.*)subtype=, requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Manifest.response.bundle.js
+DualSubs.Akamaized.Composite.Subtitles.response = type=http-response, pattern=^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).vtt\?(.*)subtype=(Official|External), requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Composite.Subtitles.response.bundle.js
+DualSubs.Akamaized.Translate.Subtitles.response = type=http-response, pattern=^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).vtt\?(.*)subtype=Translate, requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Translate.response.bundle.js
 
 [MITM]
 hostname = %APPEND% abc-iview-mediapackagestreams-*.akamaized.net, mbc*-prod-dub-ak.akamaized.net, shls-mbcdramaksa-ak.akamaized.net, ssc-*-on-prem-ak.akamaized.net, ssc-*-ak.akamaized.net, delta45tatasky.akamaized.net, mwmpos*.akamaized.net
