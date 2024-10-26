@@ -1,2 +1,2 @@
-### 🛠️ Bug Fixes
-  * 修复 `Surge` 模块内置`参数面板`
+### 🔄 Other Changes
+  * util 由 `submodule` 更改为 `package`

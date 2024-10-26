@@ -17,6 +17,10 @@ export default defineConfig({
 				path: "./dist/Microsoft.Translate.yaml",
 				template: "./template/egern.handlebars",
 			},
+			{
+				path: "./dist/Microsoft.Translate.srmodule",
+				template: "./template/shadowrocket.handlebars",
+			},
 		],
 		dts: {
 			isExported: true,
