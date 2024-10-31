@@ -1,0 +1,25 @@
+#!name=🍿️ DualSubs: ➕ AddOn (Akamaized)
+#!desc=DualSubs 额外插件\nAkamaized 流媒体平台增强及双语字幕
+#!openUrl=http://boxjs.com/#/app/DualSubs.Universal
+#!author=VirgilClyne[https://github.com/VirgilClyne]
+#!homepage = https://DualSubs.github.io/guide/addon
+#!icon=https://www.akamai.com/site/favicon/favicon-194x194.png
+#!category=🍿️ DualSubs
+#!system = iOS,iPadOS,macOS,tvOS
+#!system_version = 15
+
+[Argument]
+Types = input,"Official,Translate",tag=[字幕] 启用类型,desc=请选择要添加的字幕选项，如果为标准播放器，则会在字幕选项中新增勾选字幕选项。
+Languages[0] = select,"AUTO","ZH","ZH-HANS","ZH-HK","ZH-HANT","EN","ES","JA","KO","DE","FR","TR","KM",tag=[字幕] 主语言（源语言）,desc=当“主语言”字幕存在时，将生成“主语言/副语言（翻译）”与“主语言（外挂）”的字幕或字幕选项。
+Languages[1] = select,"ZH","ZH-HANS","ZH-HK","ZH-HANT","EN","EN-US","ES","ES-ES","ES-419","JA","KO","DE","FR","TR","KM",tag=[字幕] 副语言（目标语言）,desc=当“副语言”字幕存在时，将生成“副语言/主语言（官方）”的字幕或字幕选项。
+Vendor = select,"Google","Microsoft",tag=[翻译器] 服务商API,desc=请选择翻译器所使用的服务商API，更多翻译选项请使用BoxJs。
+ShowOnly = switch,false,tag=[翻译器] 只显示翻译后字幕,desc=开启后仅显示翻译字幕，不做字幕合并操作。
+
+[Script]
+http-response ^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index.m3u8 requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Manifest.response.bundle.js, tag=🍿️ DualSubs.Akamaized.M3U8.Master.response, argument=[{Types},{Languages[0]},{Languages[1]},{Vendor},{ShowOnly}]
+http-response ^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).m3u8\?(.*)subtype= requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Manifest.response.bundle.js, tag=🍿️ DualSubs.Akamaized.M3U8.Subtitles.response, argument=[{Types},{Languages[0]},{Languages[1]},{Vendor},{ShowOnly}]
+http-response ^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).vtt\?(.*)subtype=(Official|External) requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Composite.Subtitles.response.bundle.js, tag=🍿️ DualSubs.Akamaized.Composite.Subtitles.response, argument=[{Types},{Languages[0]},{Languages[1]},{Vendor},{ShowOnly}]
+http-response ^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).vtt\?(.*)subtype=Translate requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Translate.response.bundle.js, tag=🍿️ DualSubs.Akamaized.Translate.Subtitles.response, argument=[{Types},{Languages[0]},{Languages[1]},{Vendor},{ShowOnly}]
+
+[MITM]
+hostname = abc-iview-mediapackagestreams-*.akamaized.net, mbc*-prod-dub-ak.akamaized.net, shls-mbcdramaksa-ak.akamaized.net, ssc-*-on-prem-ak.akamaized.net, ssc-*-ak.akamaized.net, delta45tatasky.akamaized.net, mwmpos*.akamaized.net

@@ -1,0 +1,51 @@
+name: "🍿️ DualSubs: ➕ AddOn (Akamaized)"
+desc: |-
+  DualSubs 额外插件
+  Akamaized 流媒体平台增强及双语字幕
+openUrl: "http://boxjs.com/#/app/DualSubs.Universal"
+author: |-
+  VirgilClyne[https://github.com/VirgilClyne]
+homepage: "https://DualSubs.github.io/guide/addon"
+icon: "https://www.akamai.com/site/favicon/favicon-194x194.png"
+category: "🍿️ DualSubs"
+
+http:
+  mitm:
+    - "abc-iview-mediapackagestreams-*.akamaized.net"
+    - "mbc*-prod-dub-ak.akamaized.net"
+    - "shls-mbcdramaksa-ak.akamaized.net"
+    - "ssc-*-on-prem-ak.akamaized.net"
+    - "ssc-*-ak.akamaized.net"
+    - "delta45tatasky.akamaized.net"
+    - "mwmpos*.akamaized.net"
+  script:
+    - match: ^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index.m3u8
+      name: 🍿️ DualSubs.Akamaized.M3U8.Master.response
+      type: response
+      require-body: true
+    - match: ^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).m3u8\?(.*)subtype=
+      name: 🍿️ DualSubs.Akamaized.M3U8.Subtitles.response
+      type: response
+      require-body: true
+    - match: ^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).vtt\?(.*)subtype=(Official|External)
+      name: 🍿️ DualSubs.Akamaized.Composite.Subtitles.response
+      type: response
+      require-body: true
+    - match: ^https?:\/\/(.+)\.akamaized\.net\/out\/v\d\/\w+\/index_(.+).vtt\?(.*)subtype=Translate
+      name: 🍿️ DualSubs.Akamaized.Translate.response
+      type: response
+      require-body: true
+
+script-providers:
+  🍿️ DualSubs.Akamaized.M3U8.Master.response:
+    url: https://github.com/DualSubs/Universal/releases/latest/download/Manifest.response.bundle.js
+    interval: 86400
+  🍿️ DualSubs.Akamaized.M3U8.Subtitles.response:
+    url: https://github.com/DualSubs/Universal/releases/latest/download/Manifest.response.bundle.js
+    interval: 86400
+  🍿️ DualSubs.Akamaized.Composite.Subtitles.response:
+    url: https://github.com/DualSubs/Universal/releases/latest/download/Composite.Subtitles.response.bundle.js
+    interval: 86400
+  🍿️ DualSubs.Akamaized.Translate.response:
+    url: https://github.com/DualSubs/Universal/releases/latest/download/Translate.response.bundle.js
+    interval: 86400
