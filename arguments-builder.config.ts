@@ -3,22 +3,22 @@ import { defineConfig } from "@iringo/arguments-builder";
 export default defineConfig({
 	output: {
 		surge: {
-			path: "./dist/Microsoft.Translate.sgmodule",
+			path: "./dist/DualSubs.AddOn.MicrosoftTranslate.sgmodule",
 		},
 		loon: {
-			path: "./dist/Microsoft.Translate.plugin",
+			path: "./dist/DualSubs.AddOn.MicrosoftTranslate.plugin",
 		},
 		customItems: [
 			{
-				path: "./dist/Microsoft.Translate.stoverride",
+				path: "./dist/DualSubs.AddOn.MicrosoftTranslate.stoverride",
 				template: "./template/stash.handlebars",
 			},
 			{
-				path: "./dist/Microsoft.Translate.yaml",
+				path: "./dist/DualSubs.AddOn.MicrosoftTranslate.yaml",
 				template: "./template/egern.handlebars",
 			},
 			{
-				path: "./dist/Microsoft.Translate.srmodule",
+				path: "./dist/DualSubs.AddOn.MicrosoftTranslate.srmodule",
 				template: "./template/shadowrocket.handlebars",
 			},
 		],
