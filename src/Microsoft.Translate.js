@@ -1,4 +1,4 @@
-import { $platform, Lodash as _, URL, Storage, fetch, notification, log, logError, wait, done, getScript, runScript } from "@nsnanocat/util";
+import { $app, Console, done, fetch, Lodash as _, notification, Storage, wait } from "@nsnanocat/util";
 import database from "./function/database.mjs";
 import setENV from "./function/setENV.mjs";
 const $request = {
@@ -15,26 +15,17 @@ const $request = {
 	 * @type {{Settings: import('./types').Settings}}
 	 */
 	const { Settings, Caches, Configs } = setENV("DualSubs", ["Translate", "API"], database);
-	log(`⚠ Settings.Switch: ${Settings?.Switch}`, "");
-	switch (Settings.Switch) {
-		case true:
-		default: {
-			const $response = await fetch($request);
-			_.set(Settings, "Vendor", "Microsoft");
-			_.set(Settings, "Microsoft.Version", "Azure");
-			_.set(Settings, "Microsoft.Mode", "Token");
-			_.set(Settings, "Microsoft.Token", $response?.body);
-			log(`⚠ Settings: ${JSON.stringify(Settings)}`, "");
-			// 写入缓存
-			Storage.setItem("@DualSubs.Translate.Settings.Vendor", Settings.Vendor);
-			Storage.setItem("@DualSubs.API.Settings.Microsoft.Version", Settings.Microsoft.Version);
-			Storage.setItem("@DualSubs.API.Settings.Microsoft.Mode", Settings.Microsoft.Mode);
-			Storage.setItem("@DualSubs.API.Settings.Microsoft.Token", Settings.Microsoft.Token);
-			break;
-		}
-		case false:
-			break;
-	}
+	const $response = await fetch($request);
+	_.set(Settings, "Vendor", "Microsoft");
+	_.set(Settings, "Microsoft.Version", "Azure");
+	_.set(Settings, "Microsoft.Mode", "Token");
+	_.set(Settings, "Microsoft.Token", $response?.body);
+	Console.info(`Settings: ${JSON.stringify(Settings)}`);
+	// 写入缓存
+	Storage.setItem("@DualSubs.Translate.Settings.Vendor", Settings.Vendor);
+	Storage.setItem("@DualSubs.API.Settings.Microsoft.Version", Settings.Microsoft.Version);
+	Storage.setItem("@DualSubs.API.Settings.Microsoft.Mode", Settings.Microsoft.Mode);
+	Storage.setItem("@DualSubs.API.Settings.Microsoft.Token", Settings.Microsoft.Token);
 })()
-	.catch(e => logError(e))
+	.catch(e => Console.error(e))
 	.finally(() => done());

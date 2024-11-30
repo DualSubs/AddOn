@@ -1,7 +1,6 @@
 export default {
     "Default": {
         "Settings": {
-            "Switch": true,
             "Type": "Translate",
             "Types": [
                 "Official",
