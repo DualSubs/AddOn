@@ -1,6 +1,5 @@
 {
 	"name": "@dualsubs/addon",
-	"version": "1.0.3",
 	"organizationName": "🍿️ DualSubs",
 	"displayName": "🍿️ DualSubs: ➕ AddOn",
 	"description": "DualSubs 额外插件",
@@ -14,7 +13,8 @@
 	"system": [
 		"iOS",
 		"iPadOS",
-		"macOS"
+		"macOS",
+		"tvOS"
 	],
 	"systemVersion": 15,
 	"license": "Apache-2.0",
@@ -44,5 +44,8 @@
 		"@rspack/cli": "^1.0.13",
 		"@rspack/core": "^1.0.13",
 		"node-polyfill-webpack-plugin": "^4.0.0"
+	},
+	"dependencies": {
+		"@nsnanocat/util": "^1.6.4"
 	}
 }
