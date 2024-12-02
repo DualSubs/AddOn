@@ -20,7 +20,7 @@ const $request = {
 	_.set(Settings, "Microsoft.Version", "Azure");
 	_.set(Settings, "Microsoft.Mode", "Token");
 	_.set(Settings, "Microsoft.Token", $response?.body);
-	lConsole.info(`Settings: ${JSON.stringify(Settings)}`);
+	Console.debug(`Settings.Microsoft.Token: ${JSON.stringify(Settings.Microsoft.Token)}`);
 	// 写入缓存
 	Storage.setItem("@DualSubs.Translate.Settings.Vendor", Settings.Vendor);
 	Storage.setItem("@DualSubs.API.Settings.Microsoft.Version", Settings.Microsoft.Version);
