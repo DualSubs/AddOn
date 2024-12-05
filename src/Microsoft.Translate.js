@@ -1,4 +1,4 @@
-import { $app, Console, done, fetch, Lodash as _, notification, Storage, wait } from "@nsnanocat/util";
+import { Console, done, fetch, Lodash as _, Storage } from "@nsnanocat/util";
 import database from "./function/database.mjs";
 import setENV from "./function/setENV.mjs";
 const $request = {
@@ -8,7 +8,6 @@ const $request = {
 		Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 	},
 };
-Console.debug = () => {};
 /***************** Processing *****************/
 (async () => {
 	/**
