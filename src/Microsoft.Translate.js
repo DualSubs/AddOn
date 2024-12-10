@@ -15,6 +15,7 @@ const $request = {
 	 * @type {{Settings: import('./types').Settings}}
 	 */
 	const { Settings, Caches, Configs } = setENV("DualSubs", ["Translate", "API"], database);
+	Console.logLevel = Settings.LogLevel;
 	const $response = await fetch($request);
 	_.set(Settings, "Vendor", "Microsoft");
 	_.set(Settings, "Microsoft.Version", "Azure");

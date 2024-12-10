@@ -8,7 +8,6 @@ const $request = {
 		Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 	},
 };
-Console.logLevel = "DEBUG";
 /***************** Processing *****************/
 (async () => {
 	/**
@@ -16,6 +15,7 @@ Console.logLevel = "DEBUG";
 	 * @type {{Settings: import('./types').Settings}}
 	 */
 	const { Settings, Caches, Configs } = setENV("DualSubs", ["Translate", "API"], database);
+	Console.logLevel = Settings.LogLevel;
 	const $response = await fetch($request);
 	_.set(Settings, "Vendor", "Microsoft");
 	_.set(Settings, "Microsoft.Version", "Azure");
